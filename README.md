@@ -10,21 +10,31 @@ You have these methods:
 
 - Open:
 
-	jlu::MySQLite::MySQLite("dbFileName");
+```cpp
+jlu::MySQLite::MySQLite("dbFileName");
 	jlu::MySQLite::open("dbFileName");
+```
 
 - Close database:
 
-	jlu::MySQLite::~MySQLite();
-	jlu::MySQLite::close();
+```cpp
+jlu::MySQLite::~MySQLite();
+jlu::MySQLite::close();
+```
 
 - Run SQL statements, if you don't expect any data:
 
-	jlu::MySQLite::exec(const std::string& query);
+```cpp
+jlu::MySQLite::exec(const std::string& query);
+```
 
-	- Run SQL statements, if you expect data:
+- Run SQL statements, if you expect data:
 
-	jlu::MySQLite::exec(const std::string& query, 
-		std::vector<std::map<std::string, 
-							 std::variant<int, double, std::string, std::vector<uint8_t>>>>);
+```cpp
+jlu::MySQLite::exec(const std::string& query, 
+	std::vector<std::map<std::string, std::variant<int, double, std::string, std::vector<uint8_t>>>>);
+```
+
+## Example
+
 

@@ -1,0 +1,60 @@
+# ARCHIVO CONFIGURACIÓN DE ESTILOS PARA C++
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Fecha: Junio 2016
+# Autor: Jonathan López
+#
+# Pluguin que se emplea: BEAUTIFIER 
+# Para más información ver el archivo: 'guia-estilo.dox' en el directorio de la
+# documentación del proyecto.
+# Documentación de astyle: http://astyle.sourceforge.net/astyle.html#_Usage
+
+# OPCIONES PARA EL PROGRAMA 'ASTYLE'
+
+# Muestra los errores por la salida estandar
+#errors-to-stdout
+# Fija el tipo de 'fin de línea'
+lineend=linux
+
+# GUIA DE ESTILO
+
+# Llaves
+style=attach
+add-brackets
+
+# Sangrado
+
+# Tabulaciones, equivalentes a 4 espacios
+indent=force-tab=4
+# Dónde se aplica:
+indent-classes
+indent-switches
+indent-namespaces
+indent-labels
+indent-preprocessor
+
+#indent-preproc-block		# En la versión instalada esta opción aun no la tengo
+#indent-preproc-define		# En la versión instalada esta opción aun no la tengo
+#indent-preproc-cond		# En la versión instalada esta opción aun no la tengo
+
+indent-col1-comments
+min-conditional-indent=1
+
+# Espaciado en los bloques de código (ejem. 'if', 'for', 'while',...)
+break-blocks
+delete-empty-lines			# elimina líneas vacias.
+
+# Espaciado alrededor de los operadores
+pad-oper
+
+# Espaciado alrededor de los paréntesis
+pad-first-paren-out
+#pad-paren-in
+#pad-header
+
+# Espaciado alrededor del operador puntero y referencia ('*', '&' o '^')
+align-pointer=middle
+align-reference=middle
+
+# Limite el largo de las líneas a 120 carácteres
+max-code-length=120
+break-after-logical

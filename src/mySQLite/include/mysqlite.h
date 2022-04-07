@@ -6,7 +6,8 @@
 #include <string>
 #include <variant>
 #include <vector>
-#include "../../../external/sqlite3/sqlite3.h"
+// #include "../../../external/sqlite3/sqlite3.h"
+#include "sqlite3.h"
 
 namespace jlu {
 	typedef std::map<std::string, std::variant<int, double, std::string, std::vector<uint8_t>>>

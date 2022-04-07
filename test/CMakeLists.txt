@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.13.0)
+cmake_minimum_required(VERSION 3.12.0)
 
 file(GLOB_RECURSE TEST_SOURCES LIST_DIRECTORIES false *.h *.cpp)
 set(SOURCES ${TEST_SOURCES})
@@ -18,7 +18,6 @@ target_link_libraries(
     appTest 
     PUBLIC 
     gtest_main 
-    sqlite3
     MySQLite
 )
 

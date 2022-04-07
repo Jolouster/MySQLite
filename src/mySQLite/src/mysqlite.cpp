@@ -1,4 +1,4 @@
-#include "mysqlite.h"
+#include "../include/mysqlite.h"
 
 namespace jlu {
 	MySQLite::MySQLite () {
@@ -24,7 +24,9 @@ namespace jlu {
 	MySQLite::~MySQLite () {
 		try {
 			close ();
-		} catch (std::exception& e) { throw e; }
+		} catch (std::exception& e) {
+			std::cerr << "Error at try close database in destructor method. Desc.: " << e.what() << std::endl;
+		}
 	}
 
 	bool MySQLite::exec (const std::string& query) {

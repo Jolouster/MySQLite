@@ -32,7 +32,7 @@ jlu::MySQLite::exec(const std::string& query);
 
 ```cpp
 jlu::MySQLite::exec(const std::string& query, 
-	std::vector<std::map<std::string, std::variant<int, double, std::string, std::vector<uint8_t>>>>);
+	std::vector<std::map<std::string, std::variant<int, double, std::string, std::vector<uint8_t>>>>& results);
 ```
 
 ## Example

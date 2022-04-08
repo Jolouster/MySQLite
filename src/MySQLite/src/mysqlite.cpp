@@ -25,7 +25,8 @@ namespace jlu {
 		try {
 			close ();
 		} catch (std::exception& e) {
-			std::cerr << "Error at try close database in destructor method. Desc.: " << e.what() << std::endl;
+			std::cerr << "Error at try close database in destructor method. Desc.: " << e.what ()
+					  << std::endl;
 		}
 	}
 
@@ -46,8 +47,6 @@ namespace jlu {
 	}
 
 	bool MySQLite::exec (const std::string& query, std::vector<sqlRow>& result) {
-		char* errmsg = 0;
-		int rc = 0;
 		bool output = false;
 		sqlite3_stmt* stmt = NULL;
 		int stmtResult = sqlite3_prepare_v2 (db, query.c_str (), -1, &stmt, NULL);

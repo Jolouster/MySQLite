@@ -1,103 +1,67 @@
 #include <gtest/gtest.h>
 #include <filesystem>
-#include "../src/mySQLite/include/sqlite3.h"
-#include "../src/mySQLite/include/mysqlite.h"
+#include "../src/MySQLite/include/mysqlite.h"
+#include "../src/MySQLite/include/sqlite3.h"
 
 // Initial setup
-void db_initial_setup()
-{
-	if (0 != remove("test.db"))
-	{
-		std::cerr << "Error deleting test.db" << std::endl;
-	}
-
-	// we create using c library so not using any of the code to exercise
-	sqlite3 *db;
-	char *err_msg = 0;
-
-	int rc = sqlite3_open("test.db", &db);
-
-	if (rc != SQLITE_OK)
-	{
-		std::cerr << "Unable open database for testing" << std::endl;
-		sqlite3_close(db);
-		std::exit(EXIT_FAILURE);
-
-		return;
-	}
-
-	const char *sql[] = {
-		"DROP TABLE IF EXISTS contacts;"
-		"CREATE TABLE contacts (name TEXT, company TEXT, mobile TEXT, ddi TEXT, switchboard "
-		"TEXT, address1 TEXT, address2 TEXT, address3 TEXT, address4 TEXT, postcode TEXT, "
-		"email TEXT, url TEXT, category TEXT, notes TEXT);"
-		"CREATE INDEX idx_mobile ON contacts (mobile);"
-		"CREATE INDEX idx_switchboard ON contacts (switchboard);"
-		"CREATE INDEX idx_ddi ON contacts (ddi);",
-		"CREATE TABLE calls(timestamp DATETIME DEFAULT CURRENT_TIMESTAMP, callerid TEXT, "
-		"contactid INTEGER);",
-		"INSERT INTO contacts (name, mobile, switchboard, address1, address2, address3, "
-		"postcode, email, url, category) VALUES(\"Test Person\", \"07788111222\", "
-		"\"02088884444\", \"House of Commons\", \"Westminster\", \"London\", \"SW1A 0AA\", "
-		"\"test@house.co.uk\", \"www.house.com\", \"Supplier\");",
-		"INSERT INTO calls (callerid, contactid) VALUES(\"07788111222\", 1);"};
-
-	size_t num_commands = sizeof(sql) / sizeof(char *);
-
-	for (size_t i = 0; i < num_commands; ++i)
-	{
-		rc = sqlite3_exec(db, sql[i], 0, 0, &err_msg);
-
-		if (rc != SQLITE_OK)
-		{
-			fprintf(stderr, "SQL error: %s\n", err_msg);
-
-			sqlite3_free(err_msg);
-			sqlite3_close(db);
+void db_initial_setup (const std::string& fname, const std::string& bfname) {
+	std::string fileNames[] = {fname, bfname};
+	for (std::string name : fileNames) {
+		std::filesystem::path f (name.c_str ());
+		if (true == std::filesystem::exists (f)) {
+			int r = remove (name.c_str ());
+			if (0 != r) {
+				std::cerr << "Error deleting test.db. Error code: " << r << std::endl;
+			}
 		}
 	}
-	sqlite3_close(db);
 }
 
-const std::string filename("test.db");
+const std::string fileName ("test.db");
+const std::string badFileName ("terst.db");
 std::vector<std::string> tables{"contacts", "calls"};
 
-class MySqliteTest : public ::testing::Test
-{
-public:
-	void SetUp() { db_initial_setup(); }
+class MySqliteTest : public ::testing::Test {
+   public:
+	void SetUp () { db_initial_setup (fileName, badFileName); }
 };
 
-TEST_F(MySqliteTest, Create_db_object_and_delete)
-{
+TEST_F (MySqliteTest, Create_db_object_and_delete) {
 	jlu::MySQLite db;
-	EXPECT_TRUE(db.open("test.db"));
-	EXPECT_TRUE(db.close());
+	EXPECT_TRUE (db.open (fileName));
+	EXPECT_TRUE (db.close ());
 }
 
-TEST_F(MySqliteTest, Drop_table_if_exists)
-{
-	jlu::MySQLite db("test.db");
+TEST_F (MySqliteTest, Drop_table_if_exists) {
+	jlu::MySQLite db (fileName);
 	std::string query = "DROP TABLE IF EXISTS contacts;";
-	EXPECT_TRUE(db.exec(query));
-	EXPECT_TRUE(db.close());
+	EXPECT_NO_THROW (db.exec (query));
+	EXPECT_TRUE (db.exec (query));
+	EXPECT_TRUE (db.close ());
 }
 
-TEST_F(MySqliteTest, Create_Table)
-{
-	jlu::MySQLite db("test.db");
+TEST_F (MySqliteTest, Create_Table) {
+	jlu::MySQLite db (fileName);
 	std::string query =
-		"CREATE TABLE contacts (name TEXT, company TEXT, mobile TEXT, ddi TEXT, switchboard "
-		"TEXT, address1 TEXT, address2 TEXT, address3 TEXT, address4 TEXT, postcode TEXT, "
-		"email TEXT, url TEXT, category TEXT, notes TEXT);";
-	EXPECT_TRUE(db.exec(query));
-	EXPECT_TRUE(db.close());
+		"CREATE TABLE IF NOT EXISTS data_1 (id INTEGER PRIMARY KEY ASC, resource TEXT NOT NULL, "
+		"value REAL NOT NULL)";
+	EXPECT_TRUE (db.exec (query));
+	EXPECT_TRUE (db.close ());
 }
 
-TEST_F(MySqliteTest, Create_index)
-{
-	jlu::MySQLite db("terst.db");
+TEST_F (MySqliteTest, Create_index_throw_exception_badFileName) {
+	jlu::MySQLite db (badFileName);
 	std::string query = "CREATE INDEX idx_mobile ON contacts (mobile);";
-	EXPECT_TRUE(db.exec(query));
-	EXPECT_TRUE(db.close());
+	EXPECT_THROW (db.exec (query), std::runtime_error);
+	EXPECT_TRUE (db.close ());
+}
+
+TEST_F (MySqliteTest, Insert_data_in_table) {
+	jlu::MySQLite db (fileName);
+	std::string query =
+		"CREATE TABLE IF NOT EXISTS data_1 (id INTEGER AUTOINCREMENT PRIMARY KEY NOT NULL, "
+		"resource TEXT NOT NULL, value REAL NOT NULL)";
+	EXPECT_TRUE (db.exec (query));
+	query = "INSERT INTO data_1 (resource, value) values ('AI01', 2.3)";
+	EXPECT_TRUE (db.exec (query));
 }

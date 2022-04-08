@@ -4,27 +4,22 @@ set (VERSION 1.0.0)
 project(sqliteMod
 	DESCRIPTION "Aprendiendo a usar sqlite3 con c++"
     VERSION ${VERSION}
-    LANGUAGES CXX)
+	LANGUAGES CXX C)
 
-# IF IT ISN'T CROSS-COMPILING...
-if(NOT EXISTS "${CMAKE_TOOLCHAIN_FILE}")
-	if (MSVC)
-		message("Se compila para Windows")
-		set (CMAKE_SYSTEM_NAME Windows)
-	else ()
-		message("Se compila para Linux")
-		set (CMAKE_SYSTEM_NAME Linux)
-	endif()
-	
-	set (CMAKE_CXX_STANDARD 17)
-	set (CMAKE_CXX_STANDARD_REQUIRED true)
-	set (BUILD_SHARED_LIBS NO) # We want static libraries
-	set (CMAKE_VERBOSE_MAKEFILE OFF)
+set (CMAKE_CXX_STANDARD 17)
+set (CMAKE_C_STANDARD_REQUIRED true)
+set (CMAKE_CXX_STANDARD_REQUIRED true)
+set (BUILD_SHARED_LIBS NO) # We want static libraries
+set (CMAKE_VERBOSE_MAKEFILE OFF)
+
+if (CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
+	message("Esto es un sistema operativo Linux")
+else ()
+	message("Esto es un sistema operativo Windows")
 endif()
 
 option(DEBUG_TYPE "Build in debug mode" ON)
 option(INCLUDE_GOOGLE_TEST "Add Google Test framework to project" ON)
-
 
 if (DEBUG_TYPE)
 	set (CMAKE_BUILD_TYPE Debug)
@@ -79,11 +74,10 @@ endif()
 
 # Warnings level ---> Important: only after third party code
 # Add platform dependent options
-if (MSVC)
+if (CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
     add_compile_options(/W3 /WX)
 else()
 	add_compile_options(-Wall -Wextra -Wpedantic)
-	set (CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS}"-pthread")
 endif()
 
 # Add subdirectories of project -- Our modules!

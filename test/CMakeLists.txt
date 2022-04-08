@@ -17,6 +17,7 @@ target_include_directories(
 target_link_libraries(
     appTest 
     PUBLIC 
+    stdc++fs
     gtest_main 
     MySQLite
 )

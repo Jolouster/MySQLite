@@ -21,6 +21,11 @@ namespace jlu {
 		} catch (std::exception& e) { throw e; }
 	}
 
+	/**
+	 * @brief Close database if it is open and destroy the MySQLite::MySQLite object
+	 *
+	 * In case of error show a message in standard output.
+	 */
 	MySQLite::~MySQLite () {
 		try {
 			close ();
@@ -30,6 +35,13 @@ namespace jlu {
 		}
 	}
 
+	/**
+	 * @brief Execute a SQL statement and return true or false. It do not return data.
+	 *
+	 * @param query  The string to execute by sqlite3. It must contain all data and information.
+	 * @return bool  True if the process was executed successfully or false in other case.
+	 * @throw std::runtime_error if the SQL statement is wrong.
+	 */
 	bool MySQLite::exec (const std::string& query) {
 		bool output = false;
 		char* errmsg = 0;
@@ -46,6 +58,27 @@ namespace jlu {
 		return output;
 	}
 
+	/**
+	 * @brief Execute a SQL statement and return true or false. The data is passed by reference.
+	 *
+	 * @param query The string to execute by sqlite3. It must contain all data an information.
+	 * @param result The container where data will be stored. It is passed by reference. \n Its
+	 * type: std::vector<std::map<std::string, std::variant<int, double, std::string,
+	 * std::vector<uint8_t>>>>
+	 *
+	 * You can iterate over result like this way:
+	 * @code .cpp
+	 * for(long unsigned int i = 0; i < result.size(); i++) {
+	 * 		std::cout << std::get<int>(result[i]["firstField"]) << " - "
+	 * 		<< std::get<std::string>(result[i]["secondField"]) << ... << std::endl;
+	 * }
+	 * @endcode
+	 *
+	 * If the result of SQL query is empty the data container will be empty.
+	 *
+	 * @throw std::runtime_error if the SQL statement is wrong.
+	 * @return bool  True if the process was executed successfully or false in other case.
+	 */
 	bool MySQLite::exec (const std::string& query, std::vector<sqlRow>& result) {
 		bool output = false;
 		sqlite3_stmt* stmt = NULL;
@@ -67,6 +100,14 @@ namespace jlu {
 		return output;
 	}
 
+	/**
+	 * @brief Opens or creates a sqlite3 database.
+	 *
+	 * @param dbFileName Database name. If dbFileName is ":memory:" than the database will be
+	 * an in memory database. \n If dbFileName has a size of 0 than the database will be private
+	 * on disk database. \n Otherwise dbFileName will be interpreted as a file.
+	 * @throw std::runtime_error if database can not be open
+	 */
 	bool MySQLite::open (const std::string& dbFileName) {
 		int status = sqlite3_open (dbFileName.c_str (), &db);
 		bool output = false;
@@ -83,6 +124,11 @@ namespace jlu {
 		return output;
 	}
 
+	/**
+	 * @brief  Close database.
+	 *
+	 * @return bool True if the process is successfull, in other case throw an exception.
+	 */
 	bool MySQLite::close () {
 		bool output = false;
 		try {
@@ -101,11 +147,7 @@ namespace jlu {
 					dbName = "";
 				}
 			}
-		} catch (std::exception& e) {
-			// ¿Qué narices se puede hacer aquí?
-			std::cerr << e.what ();
-			std::exit (EXIT_FAILURE);
-		}
+		} catch (std::exception& e) { std::cerr << e.what (); }
 
 		return output;
 	}

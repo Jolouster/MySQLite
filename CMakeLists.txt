@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12.0)
+cmake_minimum_required(VERSION 3.18.0)
 set (VERSION 1.0.0)
 
 project(sqliteMod
@@ -69,6 +69,8 @@ if (INCLUDE_GOOGLE_TEST)
 			FetchContent_Populate(googletest)
 			add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR})
         endif()
+        FetchContent_MakeAvailable(googletest)
+        include(GoogleTest)
 endif()
 # - end Google Test
 

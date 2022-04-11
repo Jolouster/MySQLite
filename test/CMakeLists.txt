@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12.0)
+cmake_minimum_required(VERSION 3.18.0)
 
 file(GLOB_RECURSE TEST_SOURCES LIST_DIRECTORIES false *.h *.cpp)
 set(SOURCES ${TEST_SOURCES})
@@ -26,3 +26,5 @@ add_test(
     NAME MySQLiteTest
     COMMAND appTest
 )
+
+gtest_discover_tests(appTest)

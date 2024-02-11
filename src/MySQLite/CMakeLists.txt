@@ -8,7 +8,8 @@ target_include_directories(MySQLite PUBLIC include)
 # set (CMAKE_C_COMPILE_OBJECT ${CMAKE_C_COMPILER})
 # set (CMAKE_CXX_FLAGS ${CMAKE_C_FLAGS}"-pthread -DSQLITE_ENABLE_JSON1 -O2")
 
-
-target_link_libraries(MySQLite dl pthread)
+if (CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
+	target_link_libraries(MySQLite pthread dl m)
+endif()
 
 # target_link_libraries(MySQLite stdc++fs)

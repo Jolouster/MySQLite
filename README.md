@@ -12,7 +12,7 @@ You have these methods:
 
 ```cpp
 jlu::MySQLite::MySQLite("dbFileName");
-	jlu::MySQLite::open("dbFileName");
+jlu::MySQLite::open("dbFileName");
 ```
 
 - Close database:
